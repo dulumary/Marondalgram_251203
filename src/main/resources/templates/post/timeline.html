@@ -10,8 +10,8 @@
                 <div class="input-box border rounded">
                     <textarea rows="4" class="form-control border-0" id="contentsInput"></textarea>
                     <div class="d-flex justify-content-between p-2">
-                        <input type="file" id="fileInput">
-                        <i class="bi bi-image img-icon"></i>
+                        <input type="file" id="fileInput" class="d-none">
+                        <i class="bi bi-image img-icon" id="imageBtn"></i>
                         <button type="button" class="btn btn-info btn-sm" id="uploadBtn">입력</button>
                     </div>
 
@@ -21,14 +21,14 @@
                 <!-- 타임라인 -->
                 <div class="timeline my-4">
                     <!-- 카드 -->
-                    <div class="card my-3">
+                    <div class="card my-3" th:each="post:${postList}">
                         <div class="d-flex justify-content-between p-2">
-                            <div>lecture</div>
+                            <div th:text="${post.userId}">lecture</div>
                             <i class="bi bi-three-dots-vertical more-btn" data-toggle="modal" data-target="#moreModal"></i>
 
                         </div>
                         <div>
-                            <img class="w-100" src="https://cdn.pixabay.com/photo/2025/03/06/08/25/blueberries-9450130_1280.jpg">
+                            <img class="w-100" th:src="${post.imagePath}" src="https://cdn.pixabay.com/photo/2025/03/06/08/25/blueberries-9450130_1280.jpg">
                         </div>
                         <div class="p-2">
                             <i class="bi bi-heart-fill text-danger unlike-btn"></i>
@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="p-2">
-                            <b>lecture</b> <span>반가워!</span>
+                            <b th:text="${post.userId}">lecture</b> <span th:text="${post.contents}">반가워!</span>
                         </div>
                         <!-- 댓글 목록 -->
                         <div class="comment-box">
@@ -69,7 +69,6 @@
 
                     </div>
                     <!-- /카드 -->
-                    <div id="addCard"></div>
 
                 </div>
                 <!-- /타임라인 -->
@@ -82,6 +81,11 @@
         </section>
 
     <script layout:fragment="script">
+
+        $("#imageBtn").on("click", function() {
+            $("#fileInput").click();
+        });
+
         $("#uploadBtn").on("click", function() {
             let contents = $("#contentsInput").val();
 

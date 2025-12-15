@@ -4,8 +4,11 @@ import com.marondal.marondalgram.common.FileManager;
 import com.marondal.marondalgram.post.domain.Post;
 import com.marondal.marondalgram.post.repository.PostRepository;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public class PostService {
@@ -38,5 +41,9 @@ public class PostService {
         return true;
 
 
+    }
+
+    public List<Post> getPostList() {
+        return postRepository.findAll(Sort.by("id").descending());
     }
 }
