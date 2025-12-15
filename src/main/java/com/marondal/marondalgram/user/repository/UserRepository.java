@@ -18,4 +18,9 @@ public interface UserRepository {
     public User selectUser(
             @Param("loginId") String loginId
             , @Param("password") String password);
+
+
+    public User selectUserById(@Param("id") long id);
+
+
 }
