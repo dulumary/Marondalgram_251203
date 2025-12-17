@@ -34,7 +34,7 @@
                             <i class="bi bi-heart-fill text-danger unlike-btn d-none"></i>
                             <i class="bi bi-heart text-danger like-btn" th:data-post-id="${post.id}"></i>
 
-                            <span>좋아요 <span>11</span>개</span>
+                            <span>좋아요 <span th:text="${post.likeCount}">11</span>개</span>
                         </div>
 
                         <div class="p-2">

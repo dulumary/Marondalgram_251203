@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, LikeId> {
+
+//    SELECT COUNT(*) FROM `like` WHERE `post_id` = 2;
+    public int countByPostId(long postId);
+
 }

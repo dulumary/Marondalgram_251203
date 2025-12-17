@@ -30,4 +30,8 @@ public class LikeService {
         return true;
 
     }
+
+    public int countByPostId(long postId) {
+        return likeRepository.countByPostId(postId);
+    }
 }
