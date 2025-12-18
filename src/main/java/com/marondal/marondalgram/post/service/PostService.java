@@ -48,7 +48,7 @@ public class PostService {
 
     }
 
-    public List<PostDetail> getPostList() {
+    public List<PostDetail> getPostList(long userId) {
 
         List<Post> postList = postRepository.findAll(Sort.by("id").descending());
 
@@ -59,6 +59,7 @@ public class PostService {
             User user = userService.getUserById(post.getUserId());
 
             int likeCount = likeService.countByPostId(post.getId());
+            boolean isLike = likeService.isLikeByPostIdAndUserId(post.getId(), userId);
 
             PostDetail postDetail = PostDetail.builder()
                     .id(post.getId())
@@ -67,6 +68,7 @@ public class PostService {
                     .userId(post.getUserId())
                     .loginId(user.getLoginId())
                     .likeCount(likeCount)
+                    .isLike(isLike)
                     .build();
             postDetailList.add(postDetail);
         }
