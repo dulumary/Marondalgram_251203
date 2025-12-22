@@ -1,5 +1,8 @@
 package com.marondal.marondalgram.post.service;
 
+import com.marondal.marondalgram.comment.domain.Comment;
+import com.marondal.marondalgram.comment.dto.CommentDetail;
+import com.marondal.marondalgram.comment.service.CommentService;
 import com.marondal.marondalgram.common.FileManager;
 import com.marondal.marondalgram.like.service.LikeService;
 import com.marondal.marondalgram.post.domain.Post;
@@ -23,6 +26,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final LikeService likeService;
+    private final CommentService commentService;
 
     public boolean createPost(
             long userId
@@ -61,6 +65,8 @@ public class PostService {
             int likeCount = likeService.countByPostId(post.getId());
             boolean isLike = likeService.isLikeByPostIdAndUserId(post.getId(), userId);
 
+            List<CommentDetail> commentList = commentService.getCommentList(post.getId());
+
             PostDetail postDetail = PostDetail.builder()
                     .id(post.getId())
                     .contents(post.getContents())
@@ -69,6 +75,7 @@ public class PostService {
                     .loginId(user.getLoginId())
                     .likeCount(likeCount)
                     .isLike(isLike)
+                    .commentList(commentList)
                     .build();
             postDetailList.add(postDetail);
         }
