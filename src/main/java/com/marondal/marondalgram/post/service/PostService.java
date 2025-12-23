@@ -10,6 +10,7 @@ import com.marondal.marondalgram.post.dto.PostDetail;
 import com.marondal.marondalgram.post.repository.PostRepository;
 import com.marondal.marondalgram.user.domain.User;
 import com.marondal.marondalgram.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor  // 필수 멤버변수 를 생성자를 통해 대응
 @Service
@@ -81,5 +83,38 @@ public class PostService {
         }
 
         return postDetailList;
+    }
+
+
+    @Transactional
+    public boolean deletePost(long id, long userId) {
+
+        Optional<Post> optionalPost = postRepository.findById(id);
+
+        if(optionalPost.isPresent()) {
+            try {
+
+                Post post = optionalPost.get();
+
+                if(post.getUserId() != userId) {
+                    return false;
+                }
+
+                likeService.deleteLikeByPostId(post.getId());
+                commentService.deleteCommentByPostId(post.getId());
+
+                postRepository.delete(post);
+
+                FileManager.removeFile(post.getImagePath());
+
+            } catch (DataAccessException e) {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+
+        return true;
     }
 }

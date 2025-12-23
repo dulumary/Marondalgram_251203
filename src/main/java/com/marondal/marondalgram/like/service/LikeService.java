@@ -1,9 +1,13 @@
 package com.marondal.marondalgram.like.service;
 
 import com.marondal.marondalgram.like.domain.Like;
+import com.marondal.marondalgram.like.domain.LikeId;
 import com.marondal.marondalgram.like.repository.LikeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class LikeService {
@@ -38,4 +42,37 @@ public class LikeService {
     public boolean isLikeByPostIdAndUserId(long postId, long userId) {
         return likeRepository.existsByPostIdAndUserId(postId, userId);
     }
+
+    public boolean deleteLike(long postId, long userId) {
+
+        LikeId likeId = LikeId.builder()
+                .postId(postId)
+                .userId(userId)
+                .build();
+
+        Optional<Like> optionalLike = likeRepository.findById(likeId);
+
+        if(optionalLike.isPresent()) {
+
+            try {
+                likeRepository.delete(optionalLike.get());
+            } catch(DataAccessException e) {
+                return false;
+            }
+
+
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Transactional
+    public void deleteLikeByPostId(long postId) {
+
+        likeRepository.deleteByPostId(postId);
+
+    }
+
 }

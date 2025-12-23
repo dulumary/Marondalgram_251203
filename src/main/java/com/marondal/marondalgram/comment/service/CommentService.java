@@ -5,6 +5,7 @@ import com.marondal.marondalgram.comment.dto.CommentDetail;
 import com.marondal.marondalgram.comment.repository.CommentRepository;
 import com.marondal.marondalgram.user.domain.User;
 import com.marondal.marondalgram.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,11 @@ public class CommentService {
         }
 
         return commentDetailList;
+    }
+
+    @Transactional
+    public void deleteCommentByPostId(long postId) {
+        commentRepository.deleteByPostId(postId);
     }
 }
 
