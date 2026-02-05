@@ -1,10 +1,17 @@
 package com.marondal.marondalgram.user;
 
+import com.marondal.marondalgram.common.dto.ApiResponse;
 import com.marondal.marondalgram.user.domain.User;
 import com.marondal.marondalgram.user.repository.UserRepository;
 import com.marondal.marondalgram.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,39 +28,36 @@ public class UserRestController {
     }
 
     @PostMapping("/join-process")
-    public Map<String, String> join(
-            @RequestParam String loginId
+    public ResponseEntity<ApiResponse<Void>> join(
+            @RequestParam
+            @NotBlank (message="로그인 아이디는 필수 입니다.")
+            @Size(min=4, max=20, message="아이디는 4자 이상 20자 미만이여야 합니다.")
+            String loginId
             , @RequestParam String password
             , @RequestParam String name
-            , @RequestParam String email) {
+            , @RequestParam
+            @Email (message="이메일 규격이 잘못되었습니다")
+            String email) {
 
-        Map<String, String> resultMap = new HashMap<>();
-        if(userService.createUser(loginId, password, name, email)) {
-            resultMap.put("result", "success");
-        } else {
-            resultMap.put("result", "fail");
-        }
+        return ResponseEntity.ok(ApiResponse.success("회원가입 성공"));
 
-        return resultMap;
     }
 
+    @Operation(
+            summary = "아이디 중복확인",
+            description="회원 가입 과정에서 아이디 중복 여부를 확인"
+    )
     @GetMapping("/duplicate-id")
-    public Map<String, Boolean> isDuplicateId(@RequestParam String loginId) {
+    public ApiResponse<Boolean> isDuplicateId(
+            @Parameter(description = "중복확인할 로그인아이디")
+            @RequestParam String loginId) {
 
-        Map<String, Boolean> resultMap = new HashMap<>();
-
-        if(userService.isDuplicateId(loginId)) {
-            resultMap.put("isDuplicate", true);
-        } else {
-            resultMap.put("isDuplicate", false);
-        }
-
-        return resultMap;
+        return ApiResponse.success("중복확인 성공", true);
     }
 
 
     @PostMapping("/login-process")
-    public Map<String, String> login(
+    public ResponseEntity<ApiResponse<Void>> login(
             @RequestParam String loginId
             , @RequestParam String password
             , HttpSession session) {
@@ -63,15 +67,13 @@ public class UserRestController {
         Map<String, String> resultMap = new HashMap<>();
 
         if(user != null) {
-            resultMap.put("result", "success");
 
             session.setAttribute("userId", user.getId());
             session.setAttribute("userLoginId", user.getLoginId());
+            return ResponseEntity.ok(ApiResponse.success("로그인 성공"));
         } else {
-            resultMap.put("result", "fail");
+            return ResponseEntity.badRequest().body(ApiResponse.fail("로그인 실패"));
         }
-
-        return resultMap;
 
     }
 

@@ -12,6 +12,8 @@ import com.marondal.marondalgram.user.domain.User;
 import com.marondal.marondalgram.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor  // 필수 멤버변수 를 생성자를 통해 대응
 @Service
 public class PostService {
@@ -29,6 +32,8 @@ public class PostService {
     private final UserService userService;
     private final LikeService likeService;
     private final CommentService commentService;
+
+//    private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     public boolean createPost(
             long userId
@@ -65,7 +70,10 @@ public class PostService {
             User user = userService.getUserById(post.getUserId());
 
             int likeCount = likeService.countByPostId(post.getId());
+
             boolean isLike = likeService.isLikeByPostIdAndUserId(post.getId(), userId);
+
+            log.info("getPostList 좋아요 개수 : " + likeCount);
 
             List<CommentDetail> commentList = commentService.getCommentList(post.getId());
 

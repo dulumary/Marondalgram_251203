@@ -8,7 +8,7 @@ public class SHA256HashingEncoder {
     public static String encode(String message) {
 
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("sha256");
+            MessageDigest messageDigest = MessageDigest.getInstance("md5");
 
             byte[] bytes = message.getBytes();
 
