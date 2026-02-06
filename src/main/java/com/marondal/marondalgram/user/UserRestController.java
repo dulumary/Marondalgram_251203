@@ -39,6 +39,8 @@ public class UserRestController {
             @Email (message="이메일 규격이 잘못되었습니다")
             String email) {
 
+        userService.createUser(loginId, password, name, email);
+
         return ResponseEntity.ok(ApiResponse.success("회원가입 성공"));
 
     }
@@ -51,6 +53,8 @@ public class UserRestController {
     public ApiResponse<Boolean> isDuplicateId(
             @Parameter(description = "중복확인할 로그인아이디")
             @RequestParam String loginId) {
+
+
 
         return ApiResponse.success("중복확인 성공", true);
     }
